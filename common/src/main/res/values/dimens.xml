@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="main_text_size20">20sp</dimen>
+    <dimen name="big_tip_size26">26sp</dimen>
+    <dimen name="title_size_26">26sp</dimen>
+    <dimen name="big_size_60">60sp</dimen>
+    <dimen name="small_size_16">16sp</dimen>
+    <dimen name="title_height_80">80dp</dimen>
+    <dimen name="second_title_height_60">60dp</dimen>
+</resources>

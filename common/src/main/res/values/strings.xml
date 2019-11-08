@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">rebot</string>
+    <string name="main_page">p-care预诊系统</string>
+    <string name="send">发送</string>
+    <string name="look">望</string>
+    <string name="listener">闻</string>
+    <string name="request">问</string>
+    <string name="pulse">切</string>
+</resources>
