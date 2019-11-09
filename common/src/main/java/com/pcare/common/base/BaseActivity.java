@@ -20,6 +20,7 @@ public abstract class BaseActivity<P extends IPresenter> extends Activity implem
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(getLayoutId());
         ARouter.getInstance().inject(this);
+        initView();
         ButterKnife.bind(this);
         presenter = bindPresenter();
         start();
@@ -30,6 +31,10 @@ public abstract class BaseActivity<P extends IPresenter> extends Activity implem
 
     //开始了
     public void start(){
+
+    }
+
+    public void initView(){
 
     }
 

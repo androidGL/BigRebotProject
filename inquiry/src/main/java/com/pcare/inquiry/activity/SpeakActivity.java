@@ -17,125 +17,86 @@ import com.pcare.common.base.BaseActivity;
 import com.pcare.common.base.IPresenter;
 import com.pcare.common.util.TTSUtil;
 import com.pcare.inquiry.R;
-import com.pcare.inquiry.R2;
 import com.pcare.inquiry.adapter.QuestionSpeakAdapter;
+import com.pcare.inquiry.contract.SpeakContract;
 import com.pcare.inquiry.entity.MsgEntity;
+import com.pcare.inquiry.presenter.SpeakPresenter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import butterknife.BindView;
 
 /**
  * @Author: gl
  * @CreateDate: 2019/10/28
  * @Description:
  */
-public class SpeakActivity extends BaseActivity {
-    private final String TAG = "MajorSpeakActivity";
-    private List<String> queationTitleList = new ArrayList<>();
-    private List<MsgEntity> msgEntityList = new ArrayList<>();
-    private  RecyclerView.Adapter selectAdapter;
-    private RecognizerListener mRecoListener;
-    private String speechText;
+public class SpeakActivity extends BaseActivity<SpeakPresenter> implements SpeakContract.View {
 
-    @BindView(R2.id.question_list)
-    RecyclerView QuestionListView;
-
-    @BindView(R2.id.request_bottom)
-    TextView bottomSpeak;
-
-    @BindView(R2.id.request_finish)
-    TextView questionFinish;
+    private RecyclerView QuestionListView;
+    private TextView bottomSpeak;
+    private TextView questionFinish;
     @Override
     public int getLayoutId() {
         return R.layout.activity_speak;
     }
 
     @Override
-    protected IPresenter bindPresenter() {
-        return null;
+    protected SpeakPresenter bindPresenter() {
+        return new SpeakPresenter((SpeakContract.View) getSelfActivity());
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        init();
-
-        msgEntityList.add(new MsgEntity(queationTitleList.get(0),2));
-        selectAdapter = new QuestionSpeakAdapter(this,msgEntityList);
-        QuestionListView.setLayoutManager(new LinearLayoutManager(this));
-        QuestionListView.setAdapter(selectAdapter);
-        selectAdapter.notifyDataSetChanged();
-        TTSUtil.getInstance(getApplicationContext()).speaking(queationTitleList.get(0));
-        queationTitleList.remove(0);
-        bottomSpeak.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int action = event.getAction();
-                if (action == MotionEvent.ACTION_DOWN) { // 按下
-                    speechText = "";
-                    TTSUtil.getInstance(getApplicationContext()).startSpeech(mRecoListener);
-                } else if (action == MotionEvent.ACTION_UP) { // 松开
-                    TTSUtil.getInstance(getApplicationContext()).stopSpeech();
-                }
-                return true;
-            }
-        });
-
-
-    }
-    private  void init(){
-        queationTitleList.addAll(Arrays.asList(getResources().getStringArray(R.array.list_question)));
-        // 听写监听器
-        mRecoListener = new RecognizerListener() {
-            //isLast等于true 时会话结束。
-            public void onResult(RecognizerResult results, boolean isLast) {
-                Log.e(TAG, results.getResultString());
-                speechText = speechText + TTSUtil.parseIatResult(results.getResultString());
-                showTip("结果1" + speechText);
-                if(isLast) {
-                    showTip("结果2" + speechText);
-                    msgEntityList.add(new MsgEntity(speechText, 1));
-                    selectAdapter.notifyDataSetChanged();
-                    if(null != queationTitleList && queationTitleList.size()>0) {
-                        msgEntityList.add(new MsgEntity(queationTitleList.get(0), 2));
-                        selectAdapter.notifyDataSetChanged();
-                        TTSUtil.getInstance(getApplicationContext()).speaking(queationTitleList.get(0));
-                        queationTitleList.remove(0);
+    public void start() {
+        super.start();
+        if ("select".equals(getIntent().getExtras().getString("type"))) {
+            bottomSpeak.setVisibility(View.GONE);
+            questionFinish.setVisibility(View.VISIBLE);
+            presenter.useClickType();
+        }else {//否则是对话形式
+            presenter.useSpeakType();
+            bottomSpeak.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                        presenter.startSpeak();
+                    }else if(motionEvent.getAction() == MotionEvent.ACTION_UP){
+                        presenter.stopSpeak();
                     }
+                    return true;
                 }
-            }
+            });
+        }
 
-            // 会话发生错误回调接口
-            public void onError(SpeechError error) {
-                showTip(error.getPlainDescription(true)) ;
-                // 获取错误码描述
-                Log. e(TAG, "error.getPlainDescription(true)==" + error.getPlainDescription(true ));
-            }
-
-            // 开始录音
-            public void onBeginOfSpeech() {
-                showTip(" 开始录音 ");
-            }
-
-            //volume 音量值0~30， data音频数据
-            public void onVolumeChanged(int volume, byte[] data) {
-                showTip(" 声音改变了 ");
-            }
-
-            // 结束录音
-            public void onEndOfSpeech() {
-            }
-
-            // 扩展用接口
-            public void onEvent(int eventType, int arg1 , int arg2, Bundle obj) {
-            }
-        };
-    }
-    private void showTip(String info){
-        Log.i(TAG,info);
     }
 
+    @Override
+    public void initView() {
+        QuestionListView = findViewById(R.id.question_list);
+        bottomSpeak = findViewById(R.id.request_bottom);
+        questionFinish = findViewById(R.id.request_finish);
+    }
+
+
+    @Override
+    public void showToast(String toast) {
+
+    }
+
+    @Override
+    public void setAdapter(RecyclerView.Adapter adapter) {
+        QuestionListView.setLayoutManager(new LinearLayoutManager(this));
+        QuestionListView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifyAdapter() {
+    }
+
+    @Override
+    protected void onDestroy() {
+        presenter.destoty();
+        super.onDestroy();
+    }
 }

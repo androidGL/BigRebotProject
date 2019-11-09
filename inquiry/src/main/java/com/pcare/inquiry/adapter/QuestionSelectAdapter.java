@@ -12,6 +12,7 @@ import androidx.appcompat.widget.AppCompatRadioButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.pcare.common.util.TTSUtil;
 import com.pcare.inquiry.R;
 import com.pcare.inquiry.entity.QuestionEnity;
 
@@ -74,7 +75,7 @@ public class QuestionSelectAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     if(position<getItemCount()-1 && !questionList.get(position+1).isSpeak()){
-//                        TextToSpeechUtil.textToSpeak(context,questionList.get(position+1).getQuestion());
+                        TTSUtil.getInstance(context.getApplicationContext()).speaking(questionList.get(position+1).getQuestion());
                         questionList.get(position+1).setSpeak(true);
                     }
                 }

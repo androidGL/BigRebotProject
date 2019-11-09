@@ -11,6 +11,11 @@ android {
         versionName rootProject.ext.android["versionName"]
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        // 配置.so文件
+        ndk {
+            // 选择要添加的对应的cpu类型的.so库
+            abiFilters 'x86', 'armeabi', 'armeabi-v7a', 'armeabi-v8a', 'mips', 'mips64', 'x86_64'
+        }
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = [moduleName: project.getName()]
@@ -24,12 +29,21 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        //配置JNILibs
+        sourceSets {
+            main {
+                jniLibs.srcDirs = ['libs']
+            }
+        }
+        repositories {
+            flatDir {
+                dirs 'libs'
+            }
+        }
     }
     compileOptions {
-
         targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility JavaVersion.VERSION_1_8
-
     }
 }
 

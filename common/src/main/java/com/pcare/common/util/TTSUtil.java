@@ -92,6 +92,7 @@ public class TTSUtil {
     private TTSUtil(Context context) {
         mContext = context;
         // 初始化语音合成对象
+        Toast.makeText(context,"aaaaaaaaaaaaaaaaaaaaaaaa",Toast.LENGTH_LONG).show();
         mTts = SpeechSynthesizer.createSynthesizer(mContext, new InitListener() {
             @Override
             public void onInit(int code) {
@@ -233,53 +234,5 @@ public class TTSUtil {
     private void showTip(String info){
         Log.i(TAG,info);
     }
-//    public class PCareRecognizerListener implements RecognizerListener {
-//        @Override
-//        public void onResult(RecognizerResult recognizerResult, boolean b) {
-//
-//        }
-//
-//        // 会话发生错误回调接口
-//        @Override
-//        public void onError(SpeechError error) {
-//            showTip(error.getPlainDescription(true)) ;
-//            // 获取错误码描述
-//            Log. e(TAG, "error.getPlainDescription(true)==" + error.getPlainDescription(true ));
-//        }
-//
-//        // 开始录音
-//        @Override
-//        public void onBeginOfSpeech() {
-//            showTip(" 开始录音 ");
-//        }
-//
-//        //volume 音量值0~30， data音频数据
-//        @Override
-//        public void onVolumeChanged(int volume, byte[] data) {
-//            showTip(" 声音改变了 ");
-//        }
-//
-//        // 结束录音
-//        @Override
-//        public void onEndOfSpeech() {
-//            // 通知结束说话
-//            Log.e(TAG, "结束说话");
-//            //判断语音唤醒是否处于监听状态，不处于则开始监听
-//            if (!mIat.isListening()) {
-//                mIat.startListening(mWakeuperListener);
-//            }
-//        }
-//
-//        // 扩展用接口
-//        @Override
-//        public void onEvent(int eventType, int arg1 , int arg2, Bundle obj) {
-//        }
-//
-//
-//
-//
-//
-//
-//    }
 
 }
